@@ -1,0 +1,8 @@
+# The Unity Catalog volume for dug_prague_april_2026.
+resources:
+  volumes:
+    pid_stops:
+      catalog_name: playground
+      schema_name: ${resources.schemas.project_schema.name}
+      name: pid_stops
+      volume_type: MANAGED

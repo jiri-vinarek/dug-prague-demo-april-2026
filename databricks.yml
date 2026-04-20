@@ -1,0 +1,54 @@
+# This is a Databricks asset bundle definition for dug_prague_april_2026.
+# See https://docs.databricks.com/dev-tools/bundles/index.html for documentation.
+bundle:
+  name: dug_prague_april_2026
+  uuid: 7af38b67-0b4b-4ceb-955d-9f9000695c33
+
+variables:
+  dev_id:
+    description: "Unique identifier for resource isolation. Overridden by CI/CD to include the PR number."
+    default: dev
+
+include:
+  - resources/*.yml
+  - resources/*/*.yml
+
+targets:
+  dev:
+    # The default target uses 'mode: development' to create a development copy.
+    # - Deployed resources get prefixed with '[dev my_user_name]'
+    # - Any job schedules and triggers are paused by default.
+    # See also https://docs.databricks.com/dev-tools/bundles/deployment-modes.html.
+    mode: development
+    default: true
+    workspace:
+      profile: DEFAULT
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}_${var.dev_id}/${bundle.target}
+    # Overrides for the isolation of schemas and jobs used in PRs.
+    resources:
+      schemas:
+        project_schema:
+          name: "${bundle.name}_${var.dev_id}"
+          catalog_name: "playground"
+      volumes:
+        pid_stops:
+          catalog_name: playground
+          schema_name: "${resources.schemas.project_schema.name}"
+          name: pid_stops
+          volume_type: MANAGED
+      jobs:
+        dug_prague_april_2026_pid_stops_job:
+          name: dug_prague_april_2026_pid_stops_job_${var.dev_id}
+          parameters:
+            - name: raw_stops_volume
+              default: "/Volumes/${resources.volumes.pid_stops.catalog_name}/${resources.volumes.pid_stops.schema_name}/${resources.volumes.pid_stops.name}"
+            - name: bronze_stops_table
+              default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_bronze
+            - name: silver_stops_scd2_table
+              default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_silver_scd2
+          performance_target: PERFORMANCE_OPTIMIZED
+  
+  prod:
+    mode: production
+    workspace:
+      profile: DEFAULT

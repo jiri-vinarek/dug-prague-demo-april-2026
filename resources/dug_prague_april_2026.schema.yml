@@ -1,0 +1,6 @@
+# The Unity Catalog schema for dug_prague_april_2026.
+resources:
+  schemas:
+    project_schema:
+      name: ${bundle.name}
+      catalog_name: playground
