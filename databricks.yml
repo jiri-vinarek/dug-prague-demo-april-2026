@@ -52,3 +52,4 @@ targets:
     mode: production
     workspace:
       profile: DEFAULT
+      root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
