@@ -3,4 +3,4 @@ resources:
   schemas:
     project_schema:
       name: ${bundle.name}
-      catalog_name: playground
+      catalog_name: ${var.catalog_name}

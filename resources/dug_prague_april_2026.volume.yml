@@ -2,7 +2,7 @@
 resources:
   volumes:
     pid_stops:
-      catalog_name: playground
+      catalog_name: ${resources.schemas.project_schema.catalog_name}
       schema_name: ${resources.schemas.project_schema.name}
       name: pid_stops
       volume_type: MANAGED

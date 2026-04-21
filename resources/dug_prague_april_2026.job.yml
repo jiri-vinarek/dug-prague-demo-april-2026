@@ -21,10 +21,10 @@ resources:
 
       parameters:
         - name: raw_stops_volume
-          default: /Volumes/playground/dug_prague_april_2026/pid_stops
+          default: /Volumes/${resources.volumes.pid_stops.catalog_name}/${resources.volumes.pid_stops.schema_name}/${resources.volumes.pid_stops.name}
         - name: bronze_stops_table
-          default: playground.dug_prague_april_2026.stops_bronze
+          default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_bronze
         - name: silver_stops_scd2_table
-          default: playground.dug_prague_april_2026.stops_silver_scd2
+          default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_silver_scd2
       
       performance_target: STANDARD

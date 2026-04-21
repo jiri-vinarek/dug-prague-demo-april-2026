@@ -8,6 +8,9 @@ variables:
   dev_id:
     description: "Unique identifier for resource isolation. Overridden by CI/CD to include the PR number."
     default: dev
+  catalog_name:
+    description: "Unity Catalog name for the project"
+    default: dev
 
 include:
   - resources/*.yml
@@ -29,27 +32,15 @@ targets:
       schemas:
         project_schema:
           name: "${bundle.name}_${var.dev_id}"
-          catalog_name: "playground"
-      volumes:
-        pid_stops:
-          catalog_name: playground
-          schema_name: "${resources.schemas.project_schema.name}"
-          name: pid_stops
-          volume_type: MANAGED
       jobs:
         dug_prague_april_2026_pid_stops_job:
           name: dug_prague_april_2026_pid_stops_job_${var.dev_id}
-          parameters:
-            - name: raw_stops_volume
-              default: "/Volumes/${resources.volumes.pid_stops.catalog_name}/${resources.volumes.pid_stops.schema_name}/${resources.volumes.pid_stops.name}"
-            - name: bronze_stops_table
-              default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_bronze
-            - name: silver_stops_scd2_table
-              default: ${resources.schemas.project_schema.catalog_name}.${resources.schemas.project_schema.name}.stops_silver_scd2
           performance_target: PERFORMANCE_OPTIMIZED
   
   prod:
     mode: production
+    variables:
+      catalog_name: prod
     workspace:
       profile: DEFAULT
       root_path: /Workspace/Users/${workspace.current_user.userName}/.bundle/${bundle.name}/${bundle.target}
